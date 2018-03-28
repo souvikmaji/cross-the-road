@@ -19,14 +19,14 @@ Enemy.prototype.getInitialX = function() {
 };
 
 Enemy.prototype.getInitialY = function() {
-  return block.height * getRandomInt(1, 3) - block.height / 4;
+  return block.height * getRandomInt(1, tiles.numRows() - 2) - block.height / 4;
 };
 
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt, index) {
   this.x += this.velocity * dt;
   //remove enemy if canvas boundary crossed
-  if (this.x > block.width * (tiles.numCols + 1)) {
+  if (this.x > block.width * (tiles.numCols() + 1)) {
     allEnemies.splice(index, 1);
   }
 };
@@ -48,14 +48,25 @@ Enemy.prototype.checkCollisions = function() {
   }
 };
 
+allEnemies = [new Enemy()];
+
+var manageEnemies = function() {
+  var chanceOfCreatingEnemy = getRandomInt(0, 2);
+  if (chanceOfCreatingEnemy === 1) {
+    allEnemies.push(new Enemy());
+  }
+};
+
+setInterval(manageEnemies, 250);
+
 var player = (function() {
   sprite = "images/char-boy.png";
 
   var getInitialX = function() {
-    return block.height * (tiles.numCols - 2.5);
+    return block.height * (tiles.numCols() - 2.5);
   };
   var getInitialY = function() {
-    return block.width * tiles.numRows / 1.6;
+    return block.width * tiles.numRows() / 1.44;
   };
   var x = getInitialX(),
     y = getInitialY();
@@ -78,13 +89,13 @@ var player = (function() {
       if (keyPressed === "up" && y > block.height / 2) {
         y -= block.height;
       }
-      if (keyPressed === "down" && y < block.height * (tiles.numRows - 2)) {
+      if (keyPressed === "down" && y < block.height * (tiles.numRows() - 2)) {
         y += block.height;
       }
       if (keyPressed === "left" && x > block.width / 2) {
         x -= block.width;
       }
-      if (keyPressed === "right" && x < block.width * (tiles.numCols - 1)) {
+      if (keyPressed === "right" && x < block.width * (tiles.numCols() - 1)) {
         x += block.width;
       }
     },
@@ -97,17 +108,6 @@ var player = (function() {
     }
   };
 })();
-
-allEnemies = [new Enemy()];
-
-var manageEnemies = function() {
-  var chanceOfCreatingEnemy = getRandomInt(0, 2);
-  if (chanceOfCreatingEnemy === 1) {
-    allEnemies.push(new Enemy());
-  }
-};
-
-setInterval(manageEnemies, 500);
 
 document.addEventListener("keyup", function(e) {
   var allowedKeys = {

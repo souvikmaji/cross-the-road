@@ -11,29 +11,38 @@ var Engine = (function(global) {
       WATER: 0,
       STONE: 1,
       GRASS: 2
-    },
-    getType: function(x, y) {}
+    }
   };
-  var tiles = {
-    numRows: 6,
-    numCols: 5,
-    map: [
+  var tiles = (function() {
+    var map = [
       [0, 0, 0, 0, 0], // water
+      [1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1], // stone
       [1, 1, 1, 1, 1],
-      [2, 2, 2, 2, 2], // grass
-      [2, 2, 2, 2, 2]
-    ],
-    getBlock: function(x, y) {
-      var col = Math.floor(x / block.width);
-      var row = Math.floor(y / block.height) + 1;
-      return col + row * tiles.numCols;
-    }
-  };
+      [1, 1, 1, 1, 1],
+      [2, 2, 2, 2, 2] // grass
+    ];
+    return {
+      numRows: function() {
+        return map.length;
+      },
+      numCols: function() {
+        return map[0].length;
+      },
+      getType: function(x, y) {
+        return map[x][y];
+      },
+      getBlock: function(x, y) {
+        var col = Math.floor(x / block.width);
+        var row = Math.floor(y / block.height) + 1;
+        return col + row * this.numCols();
+      }
+    };
+  })();
 
-  canvas.width = block.width * tiles.numCols;
-  canvas.height = block.height * (tiles.numRows + 1);
+  canvas.width = block.width * tiles.numCols();
+  canvas.height = block.height * (tiles.numRows() + 1);
   doc.body.appendChild(canvas);
 
   /* This function serves as the kickoff point for the game loop itself
@@ -91,8 +100,8 @@ var Engine = (function(global) {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (row = 0; row < tiles.numRows; row++) {
-      for (col = 0; col < tiles.numCols; col++) {
+    for (row = 0; row < tiles.numRows(); row++) {
+      for (col = 0; col < tiles.numCols(); col++) {
         /* The drawImage function of the canvas' context element
                  * requires 3 parameters: the image to draw, the x coordinate
                  * to start drawing and the y coordinate to start drawing.
@@ -102,7 +111,7 @@ var Engine = (function(global) {
                  */
 
         ctx.drawImage(
-          Resources.get(tileImages[tiles.map[row][col]]),
+          Resources.get(tileImages[tiles.getType(row, col)]),
           col * block.width,
           row * block.height
         );
