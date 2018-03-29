@@ -15,7 +15,7 @@ var Enemy = function() {
 };
 
 Enemy.prototype.getInitialX = function() {
-  return 0;
+  return -block.width / 4;
 };
 
 Enemy.prototype.getInitialY = function() {
@@ -26,7 +26,7 @@ Enemy.prototype.getInitialY = function() {
 Enemy.prototype.update = function(dt, index) {
   this.x += this.velocity * dt;
   //remove enemy if canvas boundary crossed
-  if (this.x > block.width * (tiles.numCols() + 1)) {
+  if (this.x > ctx.canvas.width - block.width / 8) {
     allEnemies.splice(index, 1);
   }
 };
