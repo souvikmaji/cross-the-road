@@ -1,6 +1,6 @@
-var block = ctx.block;
 var tiles = ctx.tiles;
 
+// returns a pseudorandom number between min and max(inclusive)
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * Math.floor(max)) + Math.floor(min);
 }
@@ -15,18 +15,19 @@ var Enemy = function() {
 };
 
 Enemy.prototype.getInitialX = function() {
-  return -block.width / 4;
+  return -tiles.getBlockWidth() / 4;
 };
 
 Enemy.prototype.getInitialY = function() {
-  return block.height * getRandomInt(1, tiles.numRows() - 2) - block.height / 4;
+  var blockHeight = tiles.getBlockHeight();
+  return blockHeight * getRandomInt(1, tiles.numRows() - 2) - blockHeight / 4;
 };
 
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt, index) {
   this.x += this.velocity * dt;
   //remove enemy if canvas boundary crossed
-  if (this.x > ctx.canvas.width - block.width / 8) {
+  if (this.x > ctx.canvas.width - tiles.getBlockWidth() / 8) {
     allEnemies.splice(index, 1);
   }
 };
@@ -42,8 +43,7 @@ Enemy.prototype.getVelocity = function() {
 
 Enemy.prototype.checkCollisions = function() {
   var currentBlock = tiles.getBlock(this.x, this.y);
-  var currentPlayerBlock = tiles.getBlock(player.getX(), player.getY());
-  if (currentBlock === currentPlayerBlock) {
+  if (currentBlock === player.getBlock()) {
     player.manageCollision();
   }
 };
@@ -60,48 +60,56 @@ var manageEnemies = function() {
 setInterval(manageEnemies, 250);
 
 var player = (function() {
-  sprite = "images/char-boy.png";
+  var sprite = "images/char-boy.png";
 
   var getInitialX = function() {
-    return block.height * (tiles.numCols() - 2.5);
+    return tiles.getBlockHeight() * (tiles.numCols() - 2.5);
   };
+
   var getInitialY = function() {
-    return block.width * tiles.numRows() / 1.44;
+    return tiles.getBlockWidth() * tiles.numRows() / 1.44;
   };
-  var x = getInitialX(),
-    y = getInitialY();
+
+  var x = getInitialX();
+  var y = getInitialY();
+
   return {
-    getX: function() {
-      return x;
+    getBlock: function() {
+      return tiles.getBlock(x, y);
     },
-    getY: function() {
-      return y;
-    },
+
     update: function() {
       tiles.getBlock(x, y);
-      if (y < block.height / 2) {
+      if (y < tiles.getBlockHeight() / 2) {
         setTimeout(function() {
           y = getInitialY();
         }, 600);
       }
     },
+
     handleInput: function(keyPressed) {
-      if (keyPressed === "up" && y > block.height / 2) {
-        y -= block.height;
+      var blockHeight = tiles.getBlockHeight();
+      var blockWidth = tiles.getBlockWidth();
+
+      if (keyPressed === "up" && y > blockHeight / 2) {
+        y -= blockHeight;
       }
-      if (keyPressed === "down" && y < block.height * (tiles.numRows() - 2)) {
-        y += block.height;
+      if (keyPressed === "down" && y < blockHeight * (tiles.numRows() - 2)) {
+        y += blockHeight;
       }
-      if (keyPressed === "left" && x > block.width / 2) {
-        x -= block.width;
+      if (keyPressed === "left" && x > blockWidth / 2) {
+        x -= blockWidth;
       }
-      if (keyPressed === "right" && x < block.width * (tiles.numCols() - 1)) {
-        x += block.width;
+      if (keyPressed === "right" && x < blockWidth * (tiles.numCols() - 1)) {
+        x += blockWidth;
       }
     },
+
     render: function() {
       ctx.drawImage(Resources.get(sprite), x, y);
     },
+
+    // manage player after collision
     manageCollision: function() {
       x = getInitialX();
       y = getInitialY();

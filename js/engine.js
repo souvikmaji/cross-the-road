@@ -1,19 +1,15 @@
 var Engine = (function(global) {
-  var doc = global.document,
-    win = global.window,
-    canvas = doc.createElement("canvas"),
-    ctx = canvas.getContext("2d"),
-    lastTime;
-  var block = {
-    height: 83,
-    width: 101,
-    type: {
-      WATER: 0,
-      STONE: 1,
-      GRASS: 2
-    }
-  };
+  var doc = global.document;
+  var win = global.window;
+  var canvas = doc.createElement("canvas");
+  var ctx = canvas.getContext("2d");
+  var lastTime;
+
   var tiles = (function() {
+    var block = {
+      height: 83,
+      width: 101
+    };
     var map = [
       [0, 0, 0, 0, 0], // water
       [1, 1, 1, 1, 1],
@@ -23,16 +19,39 @@ var Engine = (function(global) {
       [1, 1, 1, 1, 1],
       [2, 2, 2, 2, 2] // grass
     ];
+    var images = [
+      "images/water-block.png", // :0
+      "images/stone-block.png", // :1
+      "images/grass-block.png" // :2
+    ];
+
     return {
+      //get number of rows and cols in tile
       numRows: function() {
         return map.length;
       },
       numCols: function() {
         return map[0].length;
       },
+
+      //get size of individual tile blocks
+      getBlockWidth: function() {
+        return block.width;
+      },
+      getBlockHeight: function() {
+        return block.height;
+      },
+
+      getImage: function(imageIndex) {
+        return images[imageIndex];
+      },
+
+      //get block type [0: water, 1: stone, 2: grass]
       getType: function(x, y) {
         return map[x][y];
       },
+
+      //get block number in row-major order
       getBlock: function(x, y) {
         var col = Math.floor(x / block.width);
         var row = Math.floor(y / block.height) + 1;
@@ -41,8 +60,8 @@ var Engine = (function(global) {
     };
   })();
 
-  canvas.width = block.width * tiles.numCols();
-  canvas.height = block.height * (tiles.numRows() + 1);
+  canvas.width = tiles.numCols() * tiles.getBlockWidth();
+  canvas.height = (tiles.numRows() + 1) * tiles.getBlockHeight();
   doc.body.appendChild(canvas);
 
   /* This function serves as the kickoff point for the game loop itself
@@ -76,7 +95,6 @@ var Engine = (function(global) {
       enemy.update(dt, index);
       enemy.checkCollisions();
     });
-
     player.update();
   }
 
@@ -87,16 +105,7 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
   function render() {
-    /* This array holds the relative URL to the image used
-         * for that particular row of the game level.
-         */
-    var tileImages = [
-        "images/water-block.png", // :0
-        "images/stone-block.png", // :1
-        "images/grass-block.png" // :2
-      ],
-      row,
-      col;
+    var row, col;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -111,9 +120,9 @@ var Engine = (function(global) {
                  */
 
         ctx.drawImage(
-          Resources.get(tileImages[tiles.getType(row, col)]),
-          col * block.width,
-          row * block.height
+          Resources.get(tiles.getImage(tiles.getType(row, col))),
+          col * tiles.getBlockWidth(),
+          row * tiles.getBlockHeight()
         );
       }
     }
@@ -128,7 +137,6 @@ var Engine = (function(global) {
     allEnemies.forEach(function(enemy) {
       enemy.render();
     });
-
     player.render();
   }
 
@@ -154,6 +162,5 @@ var Engine = (function(global) {
   Resources.onReady(init);
 
   global.ctx = ctx;
-  global.ctx.block = block;
   global.ctx.tiles = tiles;
 })(this);
