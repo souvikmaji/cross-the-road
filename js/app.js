@@ -37,10 +37,6 @@ Enemy.prototype.render = function() {
   ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-Enemy.prototype.getVelocity = function() {
-  return this.velocity;
-};
-
 Enemy.prototype.checkCollisions = function() {
   var currentBlock = tiles.getBlock(this.x, this.y);
   if (currentBlock === player.getBlock()) {
@@ -80,7 +76,8 @@ var player = (function() {
     },
 
     update: function() {
-      tiles.getBlock(x, y);
+      document.getElementById("timer").innerHTML = timerVal;
+      document.getElementById("score").innerHTML = score;
       if (y < tiles.getBlockHeight() / 2) {
         setTimeout(function() {
           x = getInitialX();
@@ -97,7 +94,6 @@ var player = (function() {
         y -= blockHeight;
         if (y < blockHeight / 2) {
           score += 1;
-          document.getElementById("scoreValue").innerHTML = score;
         }
       }
       if (keyPressed === "down" && y < blockHeight * (tiles.numRows() - 2)) {
@@ -129,17 +125,15 @@ var player = (function() {
   };
 })();
 
-// var timerVal = 30;
-// document.getElementById("timer").innerHTML = timerVal;
-// setInterval(function() {
-//   timerVal -= 1;
-//   if (timerVal === 0) {
-//     timerVal = 0;
-//     allEnemies = [];
-//     player.reset();
-//   }
-//   document.getElementById("timer").innerHTML = timerVal;
-// }, 1000);
+var timerVal = 30;
+setInterval(function() {
+  if (timerVal === 0) {
+    timerVal = 30;
+    allEnemies = [];
+    player.reset();
+  }
+  timerVal -= 1;
+}, 1000);
 
 document.addEventListener("keyup", function(e) {
   var allowedKeys = {
