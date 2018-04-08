@@ -48,7 +48,7 @@ Enemy.prototype.checkCollisions = function() {
   }
 };
 
-allEnemies = [new Enemy()];
+var allEnemies = [new Enemy()];
 
 var manageEnemies = function() {
   var chanceOfCreatingEnemy = getRandomInt(0, 2);
@@ -61,6 +61,7 @@ setInterval(manageEnemies, 250);
 
 var player = (function() {
   var sprite = "images/char-boy.png";
+  var score = 0;
 
   var getInitialX = function() {
     return tiles.getBlockHeight() * (tiles.numCols() - 2.5);
@@ -82,6 +83,7 @@ var player = (function() {
       tiles.getBlock(x, y);
       if (y < tiles.getBlockHeight() / 2) {
         setTimeout(function() {
+          x = getInitialX();
           y = getInitialY();
         }, 600);
       }
@@ -93,6 +95,10 @@ var player = (function() {
 
       if (keyPressed === "up" && y > blockHeight / 2) {
         y -= blockHeight;
+        if (y < blockHeight / 2) {
+          score += 1;
+          document.getElementById("scoreValue").innerHTML = score;
+        }
       }
       if (keyPressed === "down" && y < blockHeight * (tiles.numRows() - 2)) {
         y += blockHeight;
@@ -103,6 +109,12 @@ var player = (function() {
       if (keyPressed === "right" && x < blockWidth * (tiles.numCols() - 1)) {
         x += blockWidth;
       }
+    },
+
+    reset: function() {
+      x = getInitialX();
+      y = getInitialY();
+      score = 0;
     },
 
     render: function() {
@@ -116,6 +128,18 @@ var player = (function() {
     }
   };
 })();
+
+// var timerVal = 30;
+// document.getElementById("timer").innerHTML = timerVal;
+// setInterval(function() {
+//   timerVal -= 1;
+//   if (timerVal === 0) {
+//     timerVal = 0;
+//     allEnemies = [];
+//     player.reset();
+//   }
+//   document.getElementById("timer").innerHTML = timerVal;
+// }, 1000);
 
 document.addEventListener("keyup", function(e) {
   var allowedKeys = {

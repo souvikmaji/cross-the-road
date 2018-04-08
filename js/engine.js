@@ -1,7 +1,7 @@
 var Engine = (function(global) {
   var doc = global.document;
   var win = global.window;
-  var canvas = doc.createElement("canvas");
+  var canvas = doc.getElementById("gameCanvas");
   var ctx = canvas.getContext("2d");
   var lastTime;
 
@@ -34,7 +34,7 @@ var Engine = (function(global) {
         return map[0].length;
       },
 
-      //get size of individual tile blocks
+      //get details of individual tile blocks
       getBlockWidth: function() {
         return block.width;
       },
@@ -62,7 +62,6 @@ var Engine = (function(global) {
 
   canvas.width = tiles.numCols() * tiles.getBlockWidth();
   canvas.height = (tiles.numRows() + 1) * tiles.getBlockHeight();
-  doc.body.appendChild(canvas);
 
   /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
