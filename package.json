@@ -1,6 +1,6 @@
 {
   "name": "cross-the-road",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Help doro to Cross The Road",
   "main": " ",
   "scripts": {
@@ -17,11 +17,10 @@
   },
   "homepage": "https://souvikmaji.github.io/cross-the-road/",
   "devDependencies": {
-    "conventional-github-releaser": "^2.0.2",
     "gulp": "^3.9.1",
-    "gulp-bump": "^3.1.0",
-    "gulp-git": "^2.5.2",
-    "gulp-util": "^3.0.8",
-    "run-sequence": "^2.2.1"
+    "gulp-cache": "^1.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-uglify": "^3.0.0"
   }
 }
