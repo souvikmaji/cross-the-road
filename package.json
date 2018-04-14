@@ -1,0 +1,27 @@
+{
+  "name": "cross-the-road",
+  "version": "1.0.1",
+  "description": "Help doro to Cross The Road",
+  "main": " ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/souvikmaji/croos-the-road.git"
+  },
+  "author": "Souvik Maji",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/souvikmaji/croos-the-road/issues"
+  },
+  "homepage": "https://souvikmaji.github.io/cross-the-road/",
+  "devDependencies": {
+    "conventional-github-releaser": "^2.0.2",
+    "gulp": "^3.9.1",
+    "gulp-bump": "^3.1.0",
+    "gulp-git": "^2.5.2",
+    "gulp-util": "^3.0.8",
+    "run-sequence": "^2.2.1"
+  }
+}
