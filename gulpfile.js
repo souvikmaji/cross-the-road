@@ -10,10 +10,10 @@ gulp.task("github-release", function(done) {
   conventionalGithubReleaser(
     {
       type: "oauth",
-      token: "f8d11589833b9a5c0cd2c88080cf5751d48577fb"
+      token: process.env.GITHUB_TOKEN
     },
     {
-      preset: "angular" // Or to any other commit message convention you use.
+      preset: "angular"
     },
     done
   );
