@@ -1,6 +1,8 @@
 # TODO
 - ES6 with Babel
 - tests
-- gulp for running tasks
+- remove space above header
+- high scores
+- gulp to push to gh-pages
 - vertical Enemies
 - sound
